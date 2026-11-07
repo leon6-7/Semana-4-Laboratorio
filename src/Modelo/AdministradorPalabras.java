@@ -5,8 +5,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.io.Serializable;
 
-public class AdministradorPalabras {
+public class AdministradorPalabras implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

@@ -72,7 +72,7 @@ public class Principal extends JFrame{
             juegoActual = new JuegoAlAzar(adminPalabras);
             panelJuego.cargarJuego(juegoActual);
             mostrarPantalla("JUEGO");
-        } catch (Exception e) {
+        } catch (PalabraInvalidaException e) {
             JOptionPane.showMessageDialog(this, "Error al iniciar modalidad al azar: " + e.getMessage());
         }
     }
