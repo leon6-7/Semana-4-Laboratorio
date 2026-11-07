@@ -1,5 +1,5 @@
 
-package sem4proyecto;
+package gui;
 
 public class PanelAdmin {
     

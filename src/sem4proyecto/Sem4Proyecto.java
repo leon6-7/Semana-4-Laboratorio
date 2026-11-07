@@ -3,18 +3,23 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
  */
 package sem4proyecto;
-
-/**
- *
- * @author Abril
- */
-public class Sem4Proyecto {
-
-    /**
-     * @param args the command line arguments
-     */
+import sem4proyecto.gui.VentanaPrincipal;
+import sem4proyecto.gui.sonido.GestorSonido;
+import sem4proyecto.modelo.AdministradorPalabras;
+ 
+import javax.swing.SwingUtilities;
+ 
+public class Main {
+ 
     public static void main(String[] args) {
-        // TODO code application logic here
+        SwingUtilities.invokeLater(() -> {
+            AdministradorPalabras administrador = new AdministradorPalabras();
+            GestorSonido sonido = new GestorSonido();
+ 
+            VentanaPrincipal ventana = new VentanaPrincipal(administrador, sonido);
+            ventana.setVisible(true);
+        });
     }
-    
 }
+ 
+

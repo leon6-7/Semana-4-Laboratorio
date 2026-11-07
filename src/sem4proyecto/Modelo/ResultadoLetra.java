@@ -8,7 +8,7 @@ package sem4proyecto.Modelo;
  *
  * @author Abril
  */
-public enum Resultadoletra {
+public enum ResultadoLetra {
     ACIERTO,
     ERROR
 }
