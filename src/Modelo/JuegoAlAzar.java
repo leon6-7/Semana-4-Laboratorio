@@ -1,5 +1,5 @@
 
-package sem4proyecto.Modelo;
+package Modelo;
 import excepciones.*;
 
 public class JuegoAlAzar extends JuegoBase {

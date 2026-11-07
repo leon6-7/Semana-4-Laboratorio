@@ -1,5 +1,5 @@
 
-package sem4proyecto;
+package gui;
 
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -43,6 +43,25 @@ public class PanelMenu extends JPanel{
         gbc.gridy = 4;
         add(btnSalir, gbc);
         
-        
+        btnAlAzar.addActionListener(e -> ventana.iniciarJuegoAlAzar());
+
+        btnPalabraFija.addActionListener(e -> {
+            JPasswordField pf = new JPasswordField();
+            int option = JOptionPane.showConfirmDialog(
+                    this, 
+                    pf, 
+                    "Ingrese la palabra secreta (oculta):", 
+                    JOptionPane.OK_CANCEL_OPTION, 
+                    JOptionPane.PLAIN_MESSAGE
+            );
+
+            if (option == JOptionPane.OK_OPTION) {
+                String palabra = new String(pf.getPassword());
+                ventana.iniciarJuegoPalabraFija(palabra);
+            }
+        });
+
+        btnAdmin.addActionListener(e -> ventana.mostrarPantalla("ADMIN"));
+        btnSalir.addActionListener(e -> System.exit(0));
     }
 }

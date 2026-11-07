@@ -1,5 +1,5 @@
 
-package sem4proyecto.Modelo;
+package Modelo;
 
 import excepciones.*;
 import java.util.List;
