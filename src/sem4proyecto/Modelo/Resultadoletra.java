@@ -8,6 +8,8 @@ package sem4proyecto.Modelo;
  *
  * @author Abril
  */
-public class EfectoSonido {
-    
+public enum Resultadoletra {
+    ACIERTO,
+    ERROR
 }
+ 

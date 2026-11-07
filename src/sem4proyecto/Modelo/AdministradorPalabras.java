@@ -23,17 +23,26 @@ public class AdministradorPalabras {
             palabras.add(UtilTexto.normalizar(p));
         }
     }
-    public void agregar(String Palabra) throws PalabraInvalidaException,PalabraDuplicadaException{
+
+    public void agregar(String Palabra) throws PalabraInvalidaException, PalabraDuplicadaException {
         String normalizada = UtilTexto.normalizar(Palabra == null ? "" : Palabra.trim());
-        if(!UtilTexto.esPalabraValida(normalizada)){
+        if (!UtilTexto.esPalabraValida(normalizada)) {
             throw new PalabraInvalidaException("La palabra debe tener entre 3 y 15 letras, sin espacios ni números.");
         }
         if (existe(normalizada, 0)) {
             throw new PalabraDuplicadaException(
-                "La palabra «" + normalizada + "» ya existe en la lista.");
+                    "La palabra «" + normalizada + "» ya existe en la lista.");
         }
         palabras.add(normalizada);
     }
+
+    public String obtenerAleatoria() {
+        if (random == null) {
+            random = new Random();
+        }
+        return palabras.get(random.nextInt(palabras.size()));
+    }
+
     private boolean existe(String palabra, int indice) {
         if (indice >= palabras.size()) {
             return false;
@@ -43,9 +52,11 @@ public class AdministradorPalabras {
         }
         return existe(palabra, indice + 1);
     }
+
     public int cantidad() {
         return palabras.size();
     }
+
     public List<String> getPalabras() {
         return Collections.unmodifiableList(new ArrayList<>(palabras));
     }
