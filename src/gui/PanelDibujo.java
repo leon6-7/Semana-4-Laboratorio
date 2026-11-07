@@ -52,10 +52,10 @@ public class PanelDibujo extends JPanel{
             repaint();
             if (alFinalizar != null) {
                 alFinalizar.run();
-            }else{
-                this.progresoAnimacion = 0.0f;
-                timer.start();
             }
+        }else{
+            this.progresoAnimacion = 0.0f;
+            timer.start();        
         }
     } 
     

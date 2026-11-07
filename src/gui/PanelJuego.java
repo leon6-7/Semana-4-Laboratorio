@@ -151,7 +151,8 @@ public class PanelJuego extends JPanel{
                 verificarEstadoFinal();
             } else if (res == ResultadoLetra.ERROR) {
                 lblMensajes.setText("La letra no pertenece a la palabra.");
-                panelDibujo.actualizarEtapa(juego.getEtapa(), () -> {
+                Modelo.EtapaAhorcado nuevaEtapa = juego.getEtapa();
+                panelDibujo.actualizarEtapa(nuevaEtapa, () -> {
                     gestorSonido.reproducir(EfectoSonido.ERROR);
                     actualizarGUI();
                     verificarEstadoFinal();
