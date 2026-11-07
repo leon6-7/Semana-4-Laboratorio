@@ -39,4 +39,168 @@ serialVersionUID` explícito, Es el numero de version de la clase, al no escribi
 y cualquier cambio adicionar impediria leer objetos guardados con la version anterior. Fijandolo con !L controlamos cuando la version deja de ser compatible
 
 
+ 1. PAQUETE modelo
+
+
+              +----------------------------------------+
+              | <<interface>>                          |
+              | JuegoAhorcado                          |
+              +----------------------------------------+
+              | +establecerPalabraSecreta(String)      |
+              | +ingresarLetra(String): ResultadoLetra |
+              | +reiniciar()                           |
+              | +getPalabraMostrada(): String          |
+              | +getIntentosRestantes(): int           |
+              | +getLetrasAcertadas(): List<Character> |
+              | +getLetrasErradas(): List<Character>   |
+              | +getEtapa(): EtapaAhorcado             |
+              | +getEstado(): EstadoPartida            |
+              | +getModalidad(): Modalidad             |
+              | +getPalabraSecreta(): String           |
+              +----------------------------------------+
+                                  ^
+                                  : implements
+                                  :
+  +----------------------------------------------+
+  | <<abstract>>                                 |
+  | JuegoBase   (implements Serializable)        |
+  +----------------------------------------------+
+  | #palabraSecreta: String                      |
+  | #palabraMostrada: char[]                     |
+  | #intentosRestantes: int                      |
+  | #letrasAcertadas: List<Character>            |
+  | #letrasErradas: List<Character>              |
+  | #etapa: EtapaAhorcado                        |
+  | #estado: EstadoPartida                       |
+  | +MAX_INTENTOS: int = 6   {static final}      |
+  +----------------------------------------------+
+  | +ingresarLetra(String): ResultadoLetra       |
+  | +establecerPalabraSecreta(String)            |
+  | +reiniciar()                                 |
+  | -revelarLetra(char, int)       {recursivo}   |
+  | -haGanado(int): boolean        {recursivo}   |
+  | +haPerdido(): boolean                        |
+  | #elegirPalabra(): String       {abstracto}   |
+  | +getModalidad(): Modalidad     {abstracto}   |
+  +----------------------------------------------+
+                         ^
+                         | extends
+                   +-----+-----------------------------------+
+                   |                                         |
+  +---------------------------------+    +----------------------------------------+
+  | JuegoPalabraFija                |    | JuegoAlAzar                            |
+  +---------------------------------+    +----------------------------------------+
+  | -palabraConfigurada: String     |    | -administrador: AdministradorPalabras  |
+  +---------------------------------+    +----------------------------------------+
+  | +cambiarPalabra(String)         |    | #elegirPalabra(): String               |
+  | #elegirPalabra(): String        |    | +getModalidad(): Modalidad             |
+  | +getModalidad(): Modalidad      |    +----------------------------------------+
+  +---------------------------------+
+                                                           <>
+                                                           |  (agregacion)
+                                                           v
+                                          +--------------------------------------------------+
+                                          | AdministradorPalabras  (implements Serializable) |
+                                          +--------------------------------------------------+
+                                          | -palabras: List<String>                          |
+                                          | -random: Random   {transient}                    |
+                                          +--------------------------------------------------+
+                                          | +agregar(String)                                 |
+                                          | +obtenerAleatoria(): String                      |
+                                          | -existe(String, int): boolean   {recursivo}      |
+                                          | +cantidad(): int                                 |
+                                          | +getPalabras(): List<String>                     |
+                                          +--------------------------------------------------+
+
+  +--------------------------------------------+
+  | UtilTexto   {final}                        |
+  +--------------------------------------------+
+  | +normalizar(String): String   {static}     |
+  | +esLetra(char): boolean        {static}    |
+  +--------------------------------------------+
+  ^ usada por JuegoBase y AdministradorPalabras 
+
+  Enums del modelo:
+  +--------------------------+   +--------------------------+
+  | <<enum>> EstadoPartida   |   | <<enum>> ResultadoLetra  |
+  +--------------------------+   +--------------------------+
+  | EN_CURSO                 |   | ACIERTO                  |
+  | GANADA                   |   | ERROR                    |
+  | PERDIDA                  |   +--------------------------+
+  +--------------------------+
+
+  +--------------------------+   +--------------------------------+
+  | <<enum>> Modalidad       |   | <<enum>> EtapaAhorcado         |
+  +--------------------------+   +--------------------------------+
+  | PALABRA_FIJA             |   | VACIO                          |
+  | AL_AZAR                  |   | CABEZA                         |
+  +--------------------------+   | TRONCO                         |
+  | +getTextoBoton(): String |   | BRAZO_IZQ                      |
+  +--------------------------+   | BRAZO_DER                      |
+                                 | PIERNA_IZQ                     |
+                                 | PIERNA_DER                     |
+                                 +--------------------------------+
+                                 | +dePorErrores(int)  {static}   |
+                                 +--------------------------------+
+
+  JuegoAhorcado --> ResultadoLetra   JuegoBase --> EstadoPartida
+  JuegoBase --> EtapaAhorcado        JuegoBase --> Modalidad
+
+
+ 2. PAQUETE excepciones
+
+  Exception (java.lang)
+      ^
+      |
+  AhorcadoException   (base, serialVersionUID, constructor(String))
+      ^
+      |
+      +-- LetraInvalidaException ------> lanza: JuegoBase.ingresarLetra
+      |
+      +-- LetraRepetidaException ------> lanza: JuegoBase.ingresarLetra
+      |      (guarda la letra: getLetra())
+      |
+      +-- PartidaTerminadaException ---> lanza: JuegoBase.ingresarLetra
+      |
+      +-- PalabraInvalidaException ----> lanza: JuegoBase.establecerPalabraSecreta,
+      |                                          AdministradorPalabras.agregar
+      |
+      +-- PalabraDuplicadaException ---> lanza: AdministradorPalabras.agregar
+
+
+ 3. PAQUETES gui y gui.sonido
+
+
+  Main
+   |-- crea --> AdministradorPalabras
+   |-- crea --> GestorSonido
+   '-- crea --> VentanaPrincipal  (JFrame + CardLayout)
+                     |
+                     |--<>--> PanelMenu            ..> Modalidad
+                     |
+                     |--<>--> PanelJuego --<>--> PanelDibujo ..> EtapaAhorcado
+                     |            |
+                     |            |--> JuegoAhorcado   (variable polimorfica)
+                     |            '--> GestorSonido
+                     |
+                     '--<>--> PanelAdministracion
+                                   |--> AdministradorPalabras
+                                   '--> GestorSonido
+
+  +--------------------------------+   +--------------------------------------+
+  | GestorSonido  (gui.sonido)     |   | <<enum>> EfectoSonido  (gui.sonido)  |
+  +--------------------------------+   +--------------------------------------+
+  | +reproducir(EfectoSonido)      |   | ACIERTO                              |
+  | +setSilenciado(boolean)        |   | ERROR                                |
+  | +isSilenciado(): boolean       |   | ALERTA                               |
+  +--------------------------------+   | VICTORIA                             |
+                                       | DERROTA                              |
+                                       +--------------------------------------+
+                                       | +getFrecuencias(): int[]             |
+                                       | +getDuraciones(): int[]              |
+                                       +--------------------------------------+
+  GestorSonido ..> EfectoSonido
+
+ Explicación simbolos:  --|>  herencia   ..>  dependencia   -->  asociacion/uso
+           <>--  composicion/agregacion   ^ : implements / extends
 
